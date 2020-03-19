@@ -1,0 +1,155 @@
+---
+author: Kasper D Hansen
+title: Getting the GTEx data
+output:
+  html_document: default
+  pdf_document: default
+---
+
+We will be using the GTEx data version v6p. We will need
+1. Expression measures. [GTEx_Analysis_v6p_RNA-seq_RNA-SeQCv1.1.8_gene_reads.gct.gz](https://storage.googleapis.com/gtex_analysis_v6p/rna_seq_data/GTEx_Analysis_v6p_RNA-seq_RNA-SeQCv1.1.8_gene_reads.gct.gz)
+2. A list of samples [GTEx_Data_V6_Annotations_SampleAttributesDS.txt](https://storage.googleapis.com/gtex_analysis_v6p/annotations/GTEx_Data_V6_Annotations_SampleAttributesDS.txt)
+3. Gene annotation [gencode.v19.genes.v6p_model.patched_contigs.gtf.gz](https://storage.googleapis.com/gtex_analysis_v6p/reference/gencode.v19.genes.v6p_model.patched_contigs.gtf.gz)
+
+Download these files.
+
+```{download r, eval=FALSE}
+library(curl)
+curl_download("https://storage.googleapis.com/gtex_analysis_v6p/reference/gencode.v19.genes.v6p_model.patched_contigs.gtf.gz",
+destfile = "gencode.v19.genes.v6p_model.patched_contigs.gtf.gz")
+curl_download("https://storage.googleapis.com/gtex_analysis_v6p/rna_seq_data/GTEx_Analysis_v6p_RNA-seq_RNA-SeQCv1.1.8_gene_reads.gct.gz",
+	destfile = "GTEx_Analysis_v6p_RNA-seq_RNA-SeQCv1.1.8_gene_reads.gct.gz")
+curl_download("https://storage.googleapis.com/gtex_analysis_v6p/annotations/GTEx_Data_V6_Annotations_SampleAttributesDS.txt",
+	destfile = "GTEx_Data_V6_Annotations_SampleAttributesDS.txt")
+```
+
+# Gene annotation
+
+First a note. On the GTEx data portal datasets page (https://gtexportal.org/home/datasets), they say
+
+> Please note that the V6p release uses the same annotation files as the V6 release
+
+Under the 'GTEx Analysis V6p', under the heading 'Reference' they have a file `gencode.v19.genes.v6p_model.patched_contigs.gtf.gz` described as 'Gene level model based on the GENCODE transcript model. Isoforms have been collapsed to single genes.' The URL is [gencode.v19.genes.v6p_model.patched_contigs.gtf.gz](https://storage.googleapis.com/gtex_analysis_v6p/reference/gencode.v19.genes.v6p_model.patched_contigs.gtf.gz)
+. This file contains 
+- 56238 "gene" rows
+- 56238 "transcript" rows
+- 323769 "exon" rows
+(found using `gzcat gencode.v19.genes.v6p_model.patched_contigs.gtf.gz | grep -p '\texon\t' | wc -l`).
+
+Under 'GTEx Analysis V6' under 'Reference' they have a file called 'gencode.v19.genes.patched_contigs.gtf.gz' described as 'Gene level model based on the GENCODE transcript model. Isoforms have been collapsed to single genes.'. This file has 
+- no "gene" rows
+- 56318 "transcript" rows
+- 312882 "exon" rows
+So this annotation is clearly different from the v6p annotation above. Conclusion: we will use the "v6p" annotation.
+
+```{r}
+library(rtracklayer)
+gtf <- import("gencode.v19.genes.v6p_model.patched_contigs.gtf.gz")
+seqlevels(gtf) <- paste0("chr", seqlevels(gtf))
+genes <- gtf[gtf$type == "gene"]
+names(genes) <- genes$gene_id
+
+exons <- gtf[gtf$type == "exon"]
+exons.sp <- split(exons, exons$gene_id)
+gene_lengths <- sapply(exons.sp, function(xx) sum(width(xx)))
+genes$gene_length <- gene_lengths[names(genes)]
+all(genes$gene_length <= width(genes))
+rm(exons, exons.sp, gene_lengths)
+
+gtex_v6p_genes <- genes
+save(gtex_v6p_genes, file = "gtex_v6p_genes.rda")
+```
+
+# Samples
+
+To get the samples we need the count table and the sample annotation file.
+
+We're doing a quick check that the gene names are exactly the gene names of the gene count table
+```{r}
+library(readr)
+library(SummarizedExperiment)
+counts <- read_tsv("GTEx_Analysis_v6p_RNA-seq_RNA-SeQCv1.1.8_gene_reads.gct.gz", skip = 2)
+sampNames <- colnames(counts)[-(1:2)]
+ids <- sub("-SM.*", "", sampNames)
+## GTEx samples have the form GTEX-[donor ID]-[tissue site ID]-SM-[aliquot ID]
+anyDuplicated(ids) # no duplication
+## Tissue is SMTS / SMTSD
+sampleAnno <- read_tsv("GTEx_Data_V6_Annotations_SampleAttributesDS.txt")
+sampleAnno <- sampleAnno[sampleAnno$SAMPID %in% sampNames,]
+counts0 <- as.matrix(counts[,sampleAnno$SAMPID])
+rownames(counts0) <- counts$Name
+genes <- gtex_v6p_genes[rownames(counts0)]
+gtex  <- SummarizedExperiment(rowData = genes, colData = sampleAnno, assays = SimpleList(exprs = counts0))
+save(gtex, file = "gtex_v6p.rda")
+gtex.Adipose_Subcutaneous  <- gtex[, gtex$SMTSD == "Adipose - Subcutaneous"]
+save(gtex.Adipose_Subcutaneous, file = "gtex.Adipose_Subcutaneous.rda")
+gtex.Adrenal_Gland <-  gtex[, gtex$SMTSD == "Adrenal Gland"]
+save(gtex.Adrenal_Gland, file = "gtex.Adrenal_Gland.rda")
+gtex.Artery_Tibial <- gtex[, gtex$SMTSD == "Artery - Tibial"]
+save(gtex.Artery_Tibial, file = "gtex.Artery_Tibial.rda")
+gtex.Brain_Cerebellum <- gtex[, gtex$SMTSD == "Brain - Cerebellum"]
+save(gtex.Brain_Cerebellum, file = "gtex.Brain_Cerebellum.rda")
+gtex.Brain_Cortex <- gtex[, gtex$SMTSD == "Brain - Cortex"]
+save(gtex.Brain_Cortex, file = "gtex.Brain_Cortex.rda")
+gtex.Breast_Mammary <- gtex[, gtex$SMTSD == "Breast - Mammary Tissue"]
+save(gtex.Breast_Mammary, file = "gtex.Breast_Mammary.rda")
+gtex.Colon_Transverse <- gtex[, gtex$SMTSD == "Colon - Transverse"]
+save(gtex.Colon_Transverse, file = "gtex.Colon_Transverse.rda")
+gtex.Esophagus_Mucosa <- gtex[, gtex$SMTSD == "Esophagus - Mucosa"]
+save(gtex.Esophagus_Mucosa, file = "gtex.Esophagus_Mucosa.rda")
+gtex.Heart_Left_Ventricle <- gtex[, gtex$SMTSD == "Heart - Left Ventricle"]
+save(gtex.Heart_Left_Ventricle, file = "gtex.Heart_Left_Ventricle.rda")
+```
+ 
+
+# Subsetting
+
+```{r}
+library(WGCNA)
+library(SummarizedExperiment)
+load("gtex.Adipose_Subcutaneous.rda")
+gtex <- gtex.Adipose_Subcutaneous
+gtex <- gtex[rowData(gtex)$gene_type %in% c("lincRNA", "protein_coding"), ]
+
+cSums <- colSums(assay(gtex))
+logrpkm <- sweep(log2(assay(gtex) + 0.5), 2, FUN = "-", STATS = log2(cSums / 10^6))
+logrpkm <- logrpkm - log2(rowData(gtex)$gene_length / 1000)
+
+wh.expressed  <- which(rowMedians(logrpkm) > 0)
+
+gtex.0pcs <- gtex[wh.expressed,]
+logrpkm.0pcs <- logrpkm[wh.expressed,]
+ave_logrpkm <- rowMeans(logrpkm.0pcs)
+assays(gtex.0pcs) <- SimpleList(logrpkm = logrpkm.0pcs)
+rowData(gtex.0pcs)$ave_logrpkm <- ave_logrpkm
+save(gtex.0pcs, file = "gtex.0pcs.rda", compress = "xz")
+
+gtex.4pcs <- gtex.0pcs
+assay(gtex.4pcs) <- removePrincipalComponents(logrpkm.0pcs, n = 4)
+save(gtex.4pcs, file = "gtex.4pcs.rda", compress = "xz")
+
+gtex.30pcs <- gtex.0pcs
+assay(gtex.30pcs) <- removePrincipalComponents(logrpkm.0pcs, n = 30)
+save(gtex.30pcs, file = "gtex.30pcs.rda", compress = "xz")
+
+
+set.seed(29847)
+gtex.4k <- gtex.4pcs[sample(1:nrow(gtex.4pcs), size = 4000, replace = FALSE),]
+save(gtex.4k, file = "gtex.4k.rda", compress = "xz")
+```
+
+
+```{r experimentation}
+
+nam.4k <- rownames(gtex.4k)[order(rowData(gtex.4k)$ave_logrpkm)]
+
+
+dat <- list(rpm.4 = assay(gtex.4k)[nam.4k,],
+            counts = assay(gtex)[nam.4k,],
+            colSums = cSums,
+            rpm.30 = assay(gtex.30pcs)[nam.4k,],
+            rpm.0 = assay(gtex.0pcs)[nam.4k,])
+save(dat, file = "dat.rda")
+
+```
+
