@@ -5,7 +5,7 @@
   after preprocessing.
 }
 \description{
-  This contains the expression matrix (log2RPKM) of GTEX bulk RNA-seq data. The data has been preprocessed by keeping only those genes with median(log2RPKM)>0, and a subsample of 4000 genes are kept.
+  This contains the expression matrix (log2RPKM) of GTEX bulk RNA-seq data, adipose subcutaneous tissue. The data has been preprocessed by keeping only those genes with median(log2RPKM)>0, keeping only protein coding and lnRNA genes, and subsampling 4000 genes
 }
 \usage{
 data(gtex.4k)
