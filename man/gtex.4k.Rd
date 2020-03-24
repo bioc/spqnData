@@ -12,7 +12,7 @@ from GTEx v6p. The tissue is Adipose Subcutaneous.
 \format{An object of class \code{SummarizedExperiment}.
 }
 \details{
-Data is the gene expression matrix (counts) of RNA-seq data containing 350 samples from GTEx v6p. 
+This data is the processed gene expression matrix of RNA-seq data containing 350 samples from GTEx v6p. 
 The tissue is Adipose Subcutanous. We selected protein-coding or lincRNAs based on the supplied 
 annotation files. The data has been transformed to $\log_2(\text{RPKM})$, and only genes with a 
 median log2(RPKM) expression greater than zero were kept.The data was scaled such that the 
