@@ -21,9 +21,15 @@ than zero. This resulted in a data matrix with 12,267 genes of which
 
 We next removed 4 principal components from this data matrix using the
 \code{removePrincipalComponents} function from the \code{WGCNA}
-package.
+package. This results in mean-centering the genes.
 
 Finally, we randomly selected 4,000 genes.
+
+Additional information on the genes are present in the
+\code{rowData}. The type of gene (lincRNA or protein-coding) is present
+in the \code{gene_type} column. The average expression of each gene on
+the log2(RPKM)-scale, prior to removing principal components, are
+present in the \code{ave_logrpkm} column.
 }
 \source{
 Original data from \url{gtexportal.org}. A script for downloading and
