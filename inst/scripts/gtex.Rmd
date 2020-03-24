@@ -132,24 +132,8 @@ gtex.30pcs <- gtex.0pcs
 assay(gtex.30pcs) <- removePrincipalComponents(logrpkm.0pcs, n = 30)
 save(gtex.30pcs, file = "gtex.30pcs.rda", compress = "xz")
 
-
 set.seed(29847)
 gtex.4k <- gtex.4pcs[sample(1:nrow(gtex.4pcs), size = 4000, replace = FALSE),]
 save(gtex.4k, file = "gtex.4k.rda", compress = "xz")
-```
-
-
-```{r experimentation}
-
-nam.4k <- rownames(gtex.4k)[order(rowData(gtex.4k)$ave_logrpkm)]
-
-
-dat <- list(rpm.4 = assay(gtex.4k)[nam.4k,],
-            counts = assay(gtex)[nam.4k,],
-            colSums = cSums,
-            rpm.30 = assay(gtex.30pcs)[nam.4k,],
-            rpm.0 = assay(gtex.0pcs)[nam.4k,])
-save(dat, file = "dat.rda")
-
 ```
 

@@ -12,10 +12,18 @@ from GTEx v6p. The tissue is Adipose Subcutaneous.
 \format{An object of class \code{SummarizedExperiment}.
 }
 \details{
-Data is 350 samples from GTEx v6p. The tissue is Adipose Subcutanous. We
-selected protein-coding or lincRNAs based on the supplied annotation
+Data is 350 samples from GTEx v6p. The tissue is Adipose Subcutanous.
+
+We first selected protein-coding or lincRNAs based on the supplied annotation
 files. Next we kept genes with a median log2(RPKM) expression greater
-than zero.
+than zero. This resulted in a data matrix with 12,267 genes of which
+11,911 are protein-coding.
+
+We next removed 4 principal components from this data matrix using the
+\code{removePrincipalComponents} function from the \code{WGCNA}
+package.
+
+Finally, we randomly selected 4,000 genes.
 }
 \source{
 Original data from \url{gtexportal.org}. A script for downloading and
