@@ -12,10 +12,12 @@ from GTEx v6p. The tissue is Adipose Subcutaneous.
 \format{An object of class \code{SummarizedExperiment}.
 }
 \details{
-Data is 350 samples from GTEx v6p. The tissue is Adipose Subcutanous. We
-selected protein-coding or lincRNAs based on the supplied annotation
-files. Next we kept genes with a median log2(RPKM) expression greater
-than zero.
+Data is the gene expression matrix (counts) of RNA-seq data containing 350 samples from GTEx v6p. 
+The tissue is Adipose Subcutanous. We selected protein-coding or lincRNAs based on the supplied 
+annotation files. The data has been transformed to $\log_2(\text{RPKM})$, and only genes with a 
+median log2(RPKM) expression greater than zero were kept.The data was scaled such that the 
+expression of each gene has mean=0 and variance=1 across the samples. Then 4 principal components 
+has been removed. A subsample of 4000 genes are randomly selected.
 }
 \source{
 Original data from \url{gtexportal.org}. A script for downloading and
