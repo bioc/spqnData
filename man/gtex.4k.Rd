@@ -21,7 +21,7 @@ than zero.
 Original data from \url{gtexportal.org}. A script for downloading and
 processing the paper is included in \code{scripts/gtex.Rmd}.
 }
-\examples{
+\usage{
 data(gtex.4k)
 }
 \keyword{datasets}
