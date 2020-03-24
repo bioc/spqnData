@@ -9,7 +9,7 @@ A random sample of 4,000 expressed genes (protein-coding or lincRNAs)
 from GTEx v6p. The tissue is Adipose Subcutaneous.
 }
 \usage{data("gtex.4k")}
-\format{An object of class \class{SummarizedExperiment.
+\format{An object of class \code{SummarizedExperiment}.
 }
 \details{
 Data is 350 samples from GTEx v6p. The tissue is Adipose Subcutanous. We
@@ -20,8 +20,5 @@ than zero.
 \source{
 Original data from \url{gtexportal.org}. A script for downloading and
 processing the paper is included in \code{scripts/gtex.Rmd}.
-}
-\usage{
-data(gtex.4k)
 }
 \keyword{datasets}
