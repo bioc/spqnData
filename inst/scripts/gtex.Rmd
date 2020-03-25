@@ -107,6 +107,7 @@ save(gtex.Heart_Left_Ventricle, file = "gtex.Heart_Left_Ventricle.rda")
 ```{r}
 library(WGCNA)
 library(SummarizedExperiment)
+library(matrixStats)
 load("gtex.Adipose_Subcutaneous.rda")
 gtex <- gtex.Adipose_Subcutaneous
 gtex <- gtex[rowData(gtex)$gene_type %in% c("lincRNA", "protein_coding"), ]
@@ -114,12 +115,13 @@ gtex <- gtex[rowData(gtex)$gene_type %in% c("lincRNA", "protein_coding"), ]
 cSums <- colSums(assay(gtex))
 logrpkm <- sweep(log2(assay(gtex) + 0.5), 2, FUN = "-", STATS = log2(cSums / 10^6))
 logrpkm <- logrpkm - log2(rowData(gtex)$gene_length / 1000)
-
 wh.expressed  <- which(rowMedians(logrpkm) > 0)
 
 gtex.0pcs <- gtex[wh.expressed,]
 logrpkm.0pcs <- logrpkm[wh.expressed,]
 ave_logrpkm <- rowMeans(logrpkm.0pcs)
+logrpkm.0pcs <- (logrpkm.0pcs - ave_logrpkm) / rowSds(logrpkm.0pcs)
+
 assays(gtex.0pcs) <- SimpleList(logrpkm = logrpkm.0pcs)
 rowData(gtex.0pcs)$ave_logrpkm <- ave_logrpkm
 save(gtex.0pcs, file = "gtex.0pcs.rda", compress = "xz")
@@ -138,18 +140,4 @@ gtex.4k <- gtex.4pcs[sample(1:nrow(gtex.4pcs), size = 4000, replace = FALSE),]
 save(gtex.4k, file = "gtex.4k.rda", compress = "xz")
 ```
 
-
-```{r experimentation}
-
-nam.4k <- rownames(gtex.4k)[order(rowData(gtex.4k)$ave_logrpkm)]
-
-
-dat <- list(rpm.4 = assay(gtex.4k)[nam.4k,],
-            counts = assay(gtex)[nam.4k,],
-            colSums = cSums,
-            rpm.30 = assay(gtex.30pcs)[nam.4k,],
-            rpm.0 = assay(gtex.0pcs)[nam.4k,])
-save(dat, file = "dat.rda")
-
-```
 
