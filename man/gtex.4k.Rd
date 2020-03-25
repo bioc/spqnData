@@ -9,19 +9,30 @@ A random sample of 4,000 expressed genes (protein-coding or lincRNAs)
 from GTEx v6p. The tissue is Adipose Subcutaneous.
 }
 \usage{data("gtex.4k")}
-\format{An object of class \class{SummarizedExperiment.
+\format{An object of class \code{SummarizedExperiment}.
 }
 \details{
-Data is 350 samples from GTEx v6p. The tissue is Adipose Subcutanous. We
-selected protein-coding or lincRNAs based on the supplied annotation
+Data is 350 samples from GTEx v6p. The tissue is Adipose Subcutanous.
+
+We first selected protein-coding or lincRNAs based on the supplied annotation
 files. Next we kept genes with a median log2(RPKM) expression greater
-than zero.
+than zero. This resulted in a data matrix with 12,267 genes of which
+11,911 are protein-coding.
+
+We next removed 4 principal components from this data matrix using the
+\code{removePrincipalComponents} function from the \code{WGCNA}
+package. This results in mean-centering the genes.
+
+Finally, we randomly selected 4,000 genes.
+
+Additional information on the genes are present in the
+\code{rowData}. The type of gene (lincRNA or protein-coding) is present
+in the \code{gene_type} column. The average expression of each gene on
+the log2(RPKM)-scale, prior to removing principal components, are
+present in the \code{ave_logrpkm} column.
 }
 \source{
 Original data from \url{gtexportal.org}. A script for downloading and
 processing the paper is included in \code{scripts/gtex.Rmd}.
-}
-\usage{
-data(gtex.4k)
 }
 \keyword{datasets}

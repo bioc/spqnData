@@ -13,7 +13,7 @@ We will be using the GTEx data version v6p. We will need
 
 Download these files.
 
-```{download r, eval=FALSE}
+```{r download, eval=FALSE}
 library(curl)
 curl_download("https://storage.googleapis.com/gtex_analysis_v6p/reference/gencode.v19.genes.v6p_model.patched_contigs.gtf.gz",
 destfile = "gencode.v19.genes.v6p_model.patched_contigs.gtf.gz")
@@ -104,7 +104,7 @@ save(gtex.Heart_Left_Ventricle, file = "gtex.Heart_Left_Ventricle.rda")
 
 # Subsetting
 
-```{r}
+```{r subsetting}
 library(WGCNA)
 library(SummarizedExperiment)
 library(matrixStats)
@@ -134,10 +134,8 @@ gtex.30pcs <- gtex.0pcs
 assay(gtex.30pcs) <- removePrincipalComponents(logrpkm.0pcs, n = 30)
 save(gtex.30pcs, file = "gtex.30pcs.rda", compress = "xz")
 
-
 set.seed(29847)
 gtex.4k <- gtex.4pcs[sample(1:nrow(gtex.4pcs), size = 4000, replace = FALSE),]
 save(gtex.4k, file = "gtex.4k.rda", compress = "xz")
 ```
-
 
