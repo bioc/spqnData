@@ -17,11 +17,13 @@ Data is 350 samples from GTEx v6p. The tissue is Adipose Subcutanous.
 We first selected protein-coding or lincRNAs based on the supplied annotation
 files. Next we kept genes with a median log2(RPKM) expression greater
 than zero. This resulted in a data matrix with 12,267 genes of which
-11,911 are protein-coding.
+11,911 are protein-coding. We stored the mean expression value per gene
+in \code{rowData(gtex.4k)$ave_logrpkm}.
 
-We next removed 4 principal components from this data matrix using the
-\code{removePrincipalComponents} function from the \code{WGCNA}
-package. This results in mean-centering the genes.
+We next mean centered and variance scaled the expression values so all
+genes have zero mean and variance 1. We then removed 4 principal
+components from this data matrix using the
+\code{removePrincipalComponents} function from the \code{WGCNA} package.
 
 Finally, we randomly selected 4,000 genes.
 
