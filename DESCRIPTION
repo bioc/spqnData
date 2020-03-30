@@ -4,7 +4,7 @@ Title: Data for the spqn package
 Description: Datasets for spatial quantile normalization for co-expression analysis.
 Authors@R: c(person("Yi", "Wang", role = c("cre", "aut"), email = "yiwangthu5@gmail.com"),
 	     person(c("Kasper", "Daniel"), "Hansen", role = "aut"))
-Depends: R (>= 4.0.0), SummarizedExperiment
+Depends: R (>= 3.6.3), SummarizedExperiment
 License: Artistic-2.0
 LazyData: FALSE
 biocViews: Homo_sapiens_Data, ExpressionData, Tissue, RNASeqData
