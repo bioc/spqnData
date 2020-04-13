@@ -38,3 +38,6 @@ Original data from \url{gtexportal.org}. A script for downloading and
 processing the paper is included in \code{scripts/gtex.Rmd}.
 }
 \keyword{datasets}
+\examples{
+data(gtex.4k)
+}
