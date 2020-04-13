@@ -1,7 +1,7 @@
 Package: spqnData
 Version: 0.99.0
 Title: Data for the spqn package
-Description: Datasets for spatial quantile normalization for co-expression analysis.
+Description: Datasets for spatial quantile normalization for co-expression analysis. A subsample of gene expression matrix from GTEx v6p. 
 Authors@R: c(person("Yi", "Wang", role = c("cre", "aut"), email = "yiwangthu5@gmail.com"),
 	     person(c("Kasper", "Daniel"), "Hansen", role = "aut"))
 Depends: R (>= 4.0.0), SummarizedExperiment
