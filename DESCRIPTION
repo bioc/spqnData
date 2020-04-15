@@ -1,10 +1,10 @@
 Package: spqnData
-Version: 0.99.0
+Version: 0.99.1
 Title: Data for the spqn package
-Description: Datasets for spatial quantile normalization for co-expression analysis. A subsample of gene expression matrix from GTEx v6p, adipose subcutanous tissue, processed by log2rpkm normlization, filtering low expressed genes and removing priciple components.  
+Description: Bulk RNA-seq from GTEx on 4,000 randomly selected, expressed genes. Data has been processed for co-expression analysis.
 Authors@R: c(person("Yi", "Wang", role = c("cre", "aut"), email = "yiwangthu5@gmail.com"),
 	     person(c("Kasper", "Daniel"), "Hansen", role = "aut"))
-Depends: R (>= 3.6.3), SummarizedExperiment
+Depends: R (>= 4.0), SummarizedExperiment
 License: Artistic-2.0
 LazyData: FALSE
 biocViews: Homo_sapiens_Data, ExpressionData, Tissue, RNASeqData
