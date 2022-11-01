@@ -1,5 +1,5 @@
 Package: spqnData
-Version: 1.10.0
+Version: 1.11.0
 Title: Data for the spqn package
 Description: Bulk RNA-seq from GTEx on 4,000 randomly selected, expressed genes. Data has been processed for co-expression analysis.
 Authors@R: c(person("Yi", "Wang", role = c("cre", "aut"), email = "yiwangthu5@gmail.com"),
